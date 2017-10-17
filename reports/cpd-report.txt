@@ -1,0 +1,960 @@
+Found a 81 line (381 tokens) duplication in the following files: 
+Starting at line 7 of C:\Users\dell-pc\Documents\GitHub\Lab4\Graph.java
+Starting at line 7 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\Graph.java
+
+public class Graph {
+
+    private int vertexNum;//the number of the vertex
+    private int edgeNum;// the number of the edge that exist in the graph
+    private Map<String, HashMap<String, Edge>> nodeList = new HashMap<String, HashMap<String, Edge>>();
+    //private ArrayList<String> nodeSet =new ArrayList<String>();
+    private HashMap<String, Integer> nodeSet = new HashMap<String, Integer>();
+    private ArrayList<Node> nodes = new ArrayList<Node>();
+
+    public Graph() {
+        vertexNum = 0;
+        edgeNum = 0;
+    }
+
+    public void setVertexNum(int num) {
+        vertexNum = num;
+    }
+
+    public int getVertexNum() {
+        return vertexNum;
+    }
+
+    public void setEdgeNum(int num) {
+        edgeNum = num;
+    }
+
+    public int getEdgeNum() {
+        return edgeNum;
+    }
+
+    //add edge if the edge not exist else no operation
+    public void addEdge(String v1, String v2) {//i,j represent the two vertex's subscript respectively
+        if (!nodeList.containsKey(v1))//if v1 not exists
+        {
+            nodeList.put(v1, new HashMap<String, Edge>());
+        }
+        if (!nodeList.get(v1).containsKey(v2)) {
+            nodeList.get(v1).put(v2, new Edge());//if edge not exists
+        }
+        Edge tmp = nodeList.get(v1).get(v2);
+        tmp.setWeight(tmp.getWeight() + 1);
+        if (tmp.getWeight() == 1)//add the sum of the edge
+        {
+            edgeNum++;
+        }
+    }
+
+    public Map<String, HashMap<String, Edge>> getNodeList() {
+        return nodeList;
+    }
+
+    public ArrayList<Node> getNodes() {
+        return nodes;
+    }
+
+    public void addNode(String word) {
+        if (!nodeSet.containsKey(word)) {//need to be improved
+            nodes.add(new Node(word));
+            //nodeSet.add(word);
+            nodeSet.put(word, vertexNum++);
+            //vertexNum++;//add the sum of the words 
+        }
+    }
+
+    public void resetColor() {
+        for (String a : nodeList.keySet()) {
+            for (Edge b : nodeList.get(a).values()) {
+                b.setColor(1);
+            }
+        }
+        for (Node a : nodes) {
+            a.setColor(0);
+        }
+    }
+
+//	 public ArrayList<String> getNodeSet() {
+//		return nodeSet;
+//	}
+    public HashMap<String, Integer> getNodeSet() {
+        return nodeSet;
+    }
+=====================================================================
+Found a 44 line (288 tokens) duplication in the following files: 
+Starting at line 366 of C:\Users\dell-pc\Documents\GitHub\Lab4\mainWindow.java
+Starting at line 309 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\mainWindow.java
+
+            }
+            path[i] = -1;
+            mark.add(i);
+        }
+        mark.remove(word1Sub);
+        for (int i = 0; i < G.getVertexNum() - 1; i++) {//traverse all the vertex and calculate the minimal distance
+            //find minimal distance 
+            int min = infinite;
+            int sub = -1;
+            for (int a : mark) {
+                if (min > minDistance[a]) {
+                    sub = a;
+                    min = minDistance[a];
+                }
+            }
+            if (sub == -1) {
+                break;
+            }
+            //remove minimal edge 
+            mark.remove(sub);
+            //update the distance
+            HashMap<String, Edge> localMap = G.getNodeList().get(G.getNodes().get(sub).getWord());
+            if (localMap != null) {
+                for (int a : mark) {
+                    String tWord = G.getNodes().get(a).getWord();
+                    int pastDistance = minDistance[a];
+                    int newDistance = (localMap.containsKey(tWord)) ? (localMap.get(tWord).getWeight() + min) : (infinite + 1);
+                    if (newDistance < pastDistance) {
+                        minDistance[a] = newDistance;
+                        path[a] = sub;
+                    }
+                }
+            }
+        }
+        StringBuffer result = new StringBuffer();
+        int subscript;
+        StringBuffer tmp = new StringBuffer();
+        Set<Integer> destination = new HashSet<Integer>();
+        for (int i = 0; i < G.getVertexNum(); i++) {
+            if (i != word1Sub) {
+                destination.add(i);
+            }
+        }
+        for (int a : destination) {
+=====================================================================
+Found a 30 line (250 tokens) duplication in the following files: 
+Starting at line 201 of C:\Users\dell-pc\Documents\GitHub\Lab4\mainWindow.java
+Starting at line 152 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\mainWindow.java
+
+        return G;
+    }
+
+    //create the graph based on the data
+    public static void showDirectedGraph(Graph G) {
+        //white black blue bluestart blueend
+        List<String> color = Arrays.asList("#F5F5F5", "#424242", "#84FFFF", "#82B1FF", "#B9F6CA", "#0091EA");
+        GraphViz gv = new GraphViz();
+        gv.addln(gv.start_graph());
+        Map<String, HashMap<String, Edge>> g = G.getNodeList();
+        for (Node a : G.getNodes()) {
+            gv.addln(a.getWord() + "[style=filled] " + " [fillcolor =\"" + color.get(a.getColor()) + "\"];");
+//            gv.addln(a.getWord() + " [fillcolor =" + color.get(a.getColor())+ "];");
+        }
+        for (String i : g.keySet()) {
+            HashMap<String, Edge> k = g.get(i);
+            for (String j : k.keySet()) {
+                gv.addln(i + "->" + j + "[color=\"" + color.get(k.get(j).getColor())
+                        + "\",label=\"" + k.get(j).getWeight() + "\"];");
+            }
+        }
+        gv.addln(gv.end_graph());
+        String type = "png";
+        File out = new File("out." + type);
+        gv.writeGraphToFile(gv.getGraph(gv.getDotSource(), type), out);
+        G.resetColor();
+    }
+
+    //search a path randomly
+    public static String randomWalk(Graph G) throws InterruptedException {
+=====================================================================
+Found a 32 line (229 tokens) duplication in the following files: 
+Starting at line 334 of C:\Users\dell-pc\Documents\GitHub\Lab4\mainWindow.java
+Starting at line 276 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\mainWindow.java
+
+                result.append(word1);
+                Collections.reverse(tempList);
+                for (String aString : tempList) {
+                    result.append("->" + aString);
+                }
+                result.append("\n");
+            }
+        }
+        return result.toString().substring(0, result.length() - 1);
+    }
+
+    //calculate the shortest path one to all
+    public static String calcShortestPath2(Graph G, String word1) {
+        int[] minDistance = new int[G.getVertexNum()];
+        int word1Sub = -1, word2Sub = -1;
+        Set<Integer> mark = new HashSet<Integer>();
+        int[] path = new int[G.getVertexNum()];
+        HashMap<String, Edge> tempMap = G.getNodeList().get(word1);
+        String tempWord;
+        if (tempMap == null)//the word has no connection with others
+        {
+            return null;
+        }
+        //initialize all the variable
+        for (int i = 0; i < G.getVertexNum(); i++) {
+            tempWord = G.getNodes().get(i).getWord();
+            if (tempMap.containsKey(tempWord)) {
+                minDistance[i] = tempMap.get(tempWord).getWeight();
+            } else if (!tempWord.equals(word1)) {
+                minDistance[i] = infinite;
+            } else {
+                word1Sub = i;
+=====================================================================
+Found a 30 line (203 tokens) duplication in the following files: 
+Starting at line 455 of C:\Users\dell-pc\Documents\GitHub\Lab4\mainWindow.java
+Starting at line 399 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\mainWindow.java
+
+        }
+        return result;
+    }
+
+    public static Comparator<treeNodes> myCompare = new Comparator<treeNodes>() {
+
+        @Override
+        public int compare(treeNodes c1, treeNodes c2) {
+            return (int) (c1.getWeiht() - c2.getWeiht());
+        }
+    };
+
+    //get the bridge according to the graph
+    public static String getBridgeWord(Graph G, String w1, String w2) {
+        ArrayList<String> result = new ArrayList<String>();
+        HashMap<String, Edge> e = G.getNodeList().get(w1);
+        if (e == null) {
+            return null;
+        }
+        for (String i : e.keySet()) {
+            if (G.getNodeList().get(i) != null && G.getNodeList().get(i).containsKey(w2)) {
+                result.add(i);
+            }
+        }
+        StringBuffer tmp = new StringBuffer();
+        for (String aString : result) {
+            tmp.append(aString + " ");
+        }
+        return (result.size() == 0) ? null : tmp.toString();
+    }
+=====================================================================
+Found a 32 line (160 tokens) duplication in the following files: 
+Starting at line 89 of C:\Users\dell-pc\Documents\GitHub\Lab4\GraphViz.java
+Starting at line 95 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\GraphViz.java
+
+		} catch (java.io.IOException ioe) {
+			System.err.println("Error:    in I/O processing of tempfile in dir " + GraphViz.TEMP_DIR + "\n");
+			System.err.println("       or in calling external command");
+			ioe.printStackTrace();
+		} catch (java.lang.InterruptedException ie) {
+			System.err.println("Error: the execution of the external program was interrupted");
+			ie.printStackTrace();
+		}
+		return img_stream;
+	}
+
+	public File writeDotSourceToFile(String str) throws java.io.IOException {
+		File temp;
+		try {
+			temp = File.createTempFile("graph_", ".dot", new File(GraphViz.TEMP_DIR));
+			FileWriter fout = new FileWriter(temp);
+			fout.write(str);
+			fout.close();
+		} catch (Exception e) {
+			System.err.println("Error: I/O error while writing the dot source to temp file!");
+			return null;
+		}
+		return temp;
+	}
+
+	public String start_graph() {
+		return "digraph G {";
+	}
+	
+	public String end_graph() {
+		return "}";
+	}
+=====================================================================
+Found a 19 line (157 tokens) duplication in the following files: 
+Starting at line 89 of C:\Users\dell-pc\Documents\GitHub\Lab4\mainWindow.java
+Starting at line 91 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\mainWindow.java
+
+                    color(G, w1 + " " + w + " " + w2, 1);
+                }
+                tmp.append(((words.length > 1) ? "and " : " ") + words[words.length - 1] + ".");
+                s = "The bridge words from \"" + w1 + "\" to \"" + w2 + "\" " + ((words.length > 1) ? "are:" : "is:") + tmp.toString();
+            }
+        } else if (G.getNodeSet().containsKey(w2)) {
+            s = "No \"" + w1 + "\" in the graph!";
+        } else if (G.getNodeSet().containsKey(w1)) {
+            s = "No \"" + w2 + "\" in the graph!";
+        } else {
+            s = "No \"" + w1 + "\" and \"" + w2 + "\" in the graph!";
+        }
+        return s;
+    }
+
+    //create new sentence based on the bridge words
+    public static String generateNewText(Graph G, String inputText) {
+        //return mode: new sentence do not need modify to the standard format
+        String[] words = inputText.split("[^a-zA-Z]+");
+=====================================================================
+Found a 32 line (149 tokens) duplication in the following files: 
+Starting at line 298 of C:\Users\dell-pc\Documents\GitHub\Lab4\mainWindow.java
+Starting at line 240 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\mainWindow.java
+
+                    if (tNode.getWord() == b) {
+                        find = true;
+                        if (tNode.getWeiht() > newDistance) {
+                            candidate.remove(tNode);
+                        }
+                        candidate.add(new treeNodes(prNode, newDistance, b));
+                        break;
+                    }
+                }
+                if (!find) {
+                    candidate.add(new treeNodes(prNode, newDistance, b));//add when the node never appear in the tree
+                }
+            }
+        }
+        //trace back one route
+        if (prNode == null) {
+            return ("Inaccessible form \"" + word1 + "\" to \"" + word2 + "\"");
+        }
+        minDistance = prNode.getWeiht();
+        StringBuffer result = new StringBuffer();
+//		do{
+//			result.append(prNode.getWord() + "<-");
+//			prNode = prNode.getFather();
+//		}while(prNode.getWord() != word1);
+//		result.append(word1 + "\n");
+        //find other same distance route
+        candidate.add(prNode);
+        for (treeNodes dNodes : candidate) {
+            if (dNodes.getWeiht() == minDistance && dNodes.getWord().equals(word2)) {
+                //save route
+                prNode = dNodes;
+                List<String> tempList = new ArrayList<String>();
+=====================================================================
+Found a 17 line (133 tokens) duplication in the following files: 
+Starting at line 72 of C:\Users\dell-pc\Documents\GitHub\Lab4\mainWindow.java
+Starting at line 74 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\mainWindow.java
+
+    }
+
+    //find bridge word in the sentence
+    public static String queryBridgeWords(Graph G, String w1, String w2) {
+        String s = null;
+        if (G.getNodeSet().containsKey(w1) && G.getNodeSet().containsKey(w2)) {
+            s = getBridgeWord(G, w1, w2);
+            if (s == null) {
+                s = ("No bridge words from \"" + w1 + "\"to \"" + w2 + "\"!");
+            } else {
+                String[] words = s.split(" ");
+                StringBuffer tmp = new StringBuffer();
+                for (int i = 0; i < words.length - 1; i++) {
+                    tmp.append(words[i] + ", ");
+                }
+
+                for (String w : words) {
+=====================================================================
+Found a 24 line (131 tokens) duplication in the following files: 
+Starting at line 423 of C:\Users\dell-pc\Documents\GitHub\Lab4\mainWindow.java
+Starting at line 363 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\mainWindow.java
+
+                result.append(word1);
+                Collections.reverse(tempList);
+                for (String aString : tempList) {
+                    result.append("->" + aString);
+                }
+                result.append("\n");
+            }
+        }
+        return result.toString().substring(0, result.length() - 1);
+    }
+
+    public static String calcShortestPath(Graph G, String word1, String word2) {
+        //return mode 
+        //1. warning message
+        //2. w1<-w2<-...(attention! the path is reversed)
+        //3. w1<-w2<-... \n w3<-w4 ...
+        String result = null;
+        if (!G.getNodeSet().containsKey(word1)) {
+            if (!G.getNodeSet().containsKey(word2)) {
+                result = "No \"" + word1 + "\"" + " and \"" + word2 + "\" in the graph!";
+            } else {
+                result = "No \"" + word1 + "\" in the graph!";
+            }
+        } else if (!G.getNodeSet().containsKey(word2)) {
+=====================================================================
+Found a 30 line (126 tokens) duplication in the following files: 
+Starting at line 19 of C:\Users\dell-pc\Documents\GitHub\Lab4\GraphViz.java
+Starting at line 19 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\GraphViz.java
+
+	private StringBuilder graph = new StringBuilder();
+
+	public GraphViz() {
+	}
+
+	public String getDotSource() {
+		return graph.toString();
+	}
+
+	public void add(String line) {
+		graph.append(line);
+	}
+
+	public void addln(String line) {
+		graph.append(line + "\n");
+	}
+
+	public void addln() {
+		graph.append('\n');
+	}
+
+	public byte[] getGraph(String dot_source, String type) {
+		File dot;
+		byte[] img_stream = null;
+
+		try {
+			dot = writeDotSourceToFile(dot_source);
+			if (dot != null) {
+				img_stream = get_img_stream(dot, type);
+				if (dot.delete() == false)
+=====================================================================
+Found a 17 line (119 tokens) duplication in the following files: 
+Starting at line 282 of C:\Users\dell-pc\Documents\GitHub\Lab4\mainWindow.java
+Starting at line 224 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\mainWindow.java
+
+        }
+        //expand the tree 
+        while (true) {
+            prNode = candidate.poll();
+            if (prNode == null || prNode.getWord().equals(word2)) {
+                break;
+            }
+            if (!tempMap.containsKey(prNode.getWord())) {
+                candidate.remove(prNode);
+                continue;
+            }
+            for (String b : tempMap.get(prNode.getWord()).keySet()) {
+                boolean find = false;
+                int newDistance = prNode.getWeiht() + tempMap.get(prNode.getWord()).get(b).getWeight();
+                for (treeNodes tNode : candidate) {
+                    //if the new distance is shorter then update the tree
+                    if (tNode.getWord() == b) {
+=====================================================================
+Found a 25 line (103 tokens) duplication in the following files: 
+Starting at line 50 of C:\Users\dell-pc\Documents\GitHub\Lab4\GraphViz.java
+Starting at line 51 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\GraphViz.java
+
+				return img_stream;
+			}
+			return null;
+		} catch (java.io.IOException ioe) {
+			return null;
+		}
+	}
+
+	public int writeGraphToFile(byte[] img, String file) {
+		return writeGraphToFile(img, new File(file));
+	}
+
+	public int writeGraphToFile(byte[] img, File to) {
+		try {
+			FileOutputStream fos = new FileOutputStream(to);
+			fos.write(img);
+			fos.close();
+		} catch (java.io.IOException ioe) {
+			ioe.printStackTrace();
+			return -1;
+		}
+		return 1;
+	}
+
+	private byte[] get_img_stream(File dot, String type) {
+=====================================================================
+Found a 24 line (98 tokens) duplication in the following files: 
+Starting at line 5 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\treeNodes.java
+Starting at line 5 of C:\Users\dell-pc\Documents\GitHub\Lab4\treeNodes.java
+
+public class treeNodes{
+	private int weight;
+	private String word;
+	private ArrayList<treeNodes> children = new ArrayList<treeNodes>();
+	private treeNodes father = null;
+	
+	public treeNodes(treeNodes father, int weight, String word) {
+		this.father = father;
+		this.weight = weight;
+		this.word = word;
+	}
+	public int getWeiht(){
+		return weight;
+	}
+	public String getWord(){
+		return word;
+	}
+	public ArrayList<treeNodes> getChildren(){
+		return children;
+	}
+	public treeNodes getFather(){
+		return father;
+	}
+}
+=====================================================================
+Found a 30 line (85 tokens) duplication in the following files: 
+Starting at line 3 of C:\Users\dell-pc\Documents\GitHub\Lab4\Node.java
+Starting at line 3 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\Node.java
+
+public class Node {
+	private String word;
+	private int color;
+	
+	public Node(){
+		word = null;
+		color = 0;
+	}
+	
+	public Node(String word){
+		this.word = word;
+		color = 0;
+	}
+	
+	public String getWord(){
+		return word;
+	}
+	
+	public void setWord(String word){
+		this.word = word;
+	}
+	
+	public int getColor(){
+		return color;
+	}
+	
+	public void setColor(int color){
+		this.color = color;
+	}
+}
+=====================================================================
+Found a 10 line (74 tokens) duplication in the following files: 
+Starting at line 267 of C:\Users\dell-pc\Documents\GitHub\Lab4\mainWindow.java
+Starting at line 208 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\mainWindow.java
+
+    }
+
+    //calculate the shortest path two (all possible solutions)
+    public static String calcShortestPath1(Graph G, String word1, String word2) {
+        int minDistance = infinite;//the shortest distance
+        PriorityQueue<treeNodes> candidate = new PriorityQueue<treeNodes>(G.getVertexNum(), myCompare);
+        Map<String, HashMap<String, Edge>> tempMap = G.getNodeList();
+        treeNodes prNode = null;
+        //initialize the tree
+        treeNodes startPoint = new treeNodes(null, 0, word1);
+=====================================================================
+Found a 13 line (71 tokens) duplication in the following files: 
+Starting at line 22 of C:\Users\dell-pc\Documents\GitHub\Lab4\mainWindow.java
+Starting at line 26 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\mainWindow.java
+
+    public static void main(String[] args) throws InterruptedException {
+        Scanner in = new Scanner(System.in);
+        System.out.println("Choose the input mode: 0 for file, 1 for console");
+        //int option = in.nextInt();
+        int option = 0;
+        if (option == 0) {
+            System.out.println("Input file name(suffixed included):");
+            do {
+                //fileName = in.next();
+                fileName = "data.txt";
+            } while (!fileName.contains(".txt") && !fileName.contains(".bin"));
+        }
+        Graph G = createDirectedGraph(fileName);
+=====================================================================
+Found a 12 line (71 tokens) duplication in the following files: 
+Starting at line 775 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\gui\GuiController.java
+Starting at line 196 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\gui\ResizeHelper.java
+
+    private void setStageWidth(double width) {
+        width = Math.min(width, maxWidth);
+        width = Math.max(width, minWidth);
+        stage.setWidth(width);
+    }
+    
+    private void setStageHeight(double height) {
+        height = Math.min(height, maxHeight);
+        height = Math.max(height, minHeight);
+        stage.setHeight(height);
+    }
+}
+=====================================================================
+Found a 11 line (65 tokens) duplication in the following files: 
+Starting at line 71 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\MyThread.java
+Starting at line 97 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\MyThread.java
+
+        try {
+            Thread.sleep(this.delay);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            isAliveProperty.set(false);
+        }
+        try {
+            waitWhileSuspended();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(MyThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+=====================================================================
+Found a 7 line (64 tokens) duplication in the following files: 
+Starting at line 80 of C:\Users\dell-pc\Documents\GitHub\Lab4\GraphViz.java
+Starting at line 83 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\GraphViz.java
+
+			String[] args = { DOT, "-T" + type, dot.getAbsolutePath(), "-o", img.getAbsolutePath() };
+			Process p = rt.exec(args);
+			p.waitFor();
+			FileInputStream in = new FileInputStream(img.getAbsolutePath());
+			img_stream = new byte[in.available()];
+			in.read(img_stream);
+			if (in != null) in.close();
+=====================================================================
+Found a 6 line (64 tokens) duplication in the following files: 
+Starting at line 277 of C:\Users\dell-pc\Documents\GitHub\Lab4\mainWindow.java
+Starting at line 218 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\mainWindow.java
+
+        for (String a : tempMap.get(word1).keySet()) {
+            int tempWeight = tempMap.get(word1).get(a).getWeight();
+            treeNodes tempNode = new treeNodes(startPoint, tempWeight, a);
+            startPoint.getChildren().add(tempNode);
+            candidate.add(tempNode);
+        }
+=====================================================================
+Found a 7 line (63 tokens) duplication in the following files: 
+Starting at line 74 of C:\Users\dell-pc\Documents\GitHub\Lab4\GraphViz.java
+Starting at line 77 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\GraphViz.java
+
+	private byte[] get_img_stream(File dot, String type) {
+		File img;
+		byte[] img_stream = null;
+		try {
+			img = File.createTempFile("graph_", "." + type, new File(GraphViz.TEMP_DIR));
+			Runtime rt = Runtime.getRuntime();
+			String[] args = { DOT, "-T" + type, dot.getAbsolutePath(), "-o", img.getAbsolutePath() };
+=====================================================================
+Found a 13 line (60 tokens) duplication in the following files: 
+Starting at line 334 of C:\Users\dell-pc\Documents\GitHub\Lab4\mainWindow.java
+Starting at line 423 of C:\Users\dell-pc\Documents\GitHub\Lab4\mainWindow.java
+
+                result.append(word1);
+                Collections.reverse(tempList);
+                for (String aString : tempList) {
+                    result.append("->" + aString);
+                }
+                result.append("\n");
+            }
+        }
+        return result.toString().substring(0, result.length() - 1);
+    }
+
+    //calculate the shortest path one to all
+    public static String calcShortestPath2(Graph G, String word1) {
+=====================================================================
+Found a 13 line (59 tokens) duplication in the following files: 
+Starting at line 276 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\mainWindow.java
+Starting at line 363 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\mainWindow.java
+
+                result.append(pathlenth + " " + word1);
+                Collections.reverse(tempList);
+                for (String aString : tempList) {
+                    result.append("->" + aString);
+                }
+                result.append("\n");
+            }
+        }
+        return result.toString().substring(0, result.length() - 1);
+    }
+
+    //calculate the shortest path one to all
+    public static String calcShortestPath2(Graph G, String word1) {
+=====================================================================
+Found a 13 line (56 tokens) duplication in the following files: 
+Starting at line 334 of C:\Users\dell-pc\Documents\GitHub\Lab4\mainWindow.java
+Starting at line 363 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\mainWindow.java
+
+                result.append(word1);
+                Collections.reverse(tempList);
+                for (String aString : tempList) {
+                    result.append("->" + aString);
+                }
+                result.append("\n");
+            }
+        }
+        return result.toString().substring(0, result.length() - 1);
+    }
+
+    //calculate the shortest path one to all
+    public static String calcShortestPath2(Graph G, String word1) {
+=====================================================================
+Found a 12 line (56 tokens) duplication in the following files: 
+Starting at line 423 of C:\Users\dell-pc\Documents\GitHub\Lab4\mainWindow.java
+Starting at line 276 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\mainWindow.java
+
+                result.append(word1);
+                Collections.reverse(tempList);
+                for (String aString : tempList) {
+                    result.append("->" + aString);
+                }
+                result.append("\n");
+            }
+        }
+        return result.toString().substring(0, result.length() - 1);
+    }
+
+    public static String calcShortestPath(Graph G, String word1, String word2) {
+=====================================================================
+Found a 8 line (56 tokens) duplication in the following files: 
+Starting at line 446 of C:\Users\dell-pc\Documents\GitHub\Lab4\mainWindow.java
+Starting at line 386 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\mainWindow.java
+
+        } else if (!G.getNodeSet().containsKey(word2)) {
+            result = "No \"" + word2 + "\" in the graph!";
+        } else {
+            if (word2.length() == 0) {
+                result = calcShortestPath2(G, word1);
+            } else {
+                result = calcShortestPath1(G, word1, word2);
+            }
+=====================================================================
+Found a 6 line (53 tokens) duplication in the following files: 
+Starting at line 51 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\gui\BigImageController.java
+Starting at line 412 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\gui\GuiController.java
+
+            if (e.getSceneX() > scene.getWidth() - border && e.getSceneY() > scene.getHeight() - border) {
+                scene.setCursor(Cursor.SE_RESIZE);
+            } else {
+                scene.setCursor(Cursor.DEFAULT);
+            }
+        });
+=====================================================================
+Found a 8 line (48 tokens) duplication in the following files: 
+Starting at line 115 of C:\Users\dell-pc\Documents\GitHub\Lab4\mainWindow.java
+Starting at line 120 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\mainWindow.java
+
+            newSentence.append(words[i] + " ");
+            if (temp != null) {//if there is any bridge word exists
+                bridgeWords = temp.split(" ");
+                String w = bridgeWords[rand.nextInt(bridgeWords.length)];
+                colorVertex.append(w + " ");
+                newSentence.append(w + " ");
+            }
+        }
+=====================================================================
+Found a 20 line (47 tokens) duplication in the following files: 
+Starting at line 10 of C:\Users\dell-pc\Documents\GitHub\Lab4\Edge.java
+Starting at line 10 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\Edge.java
+
+		weight = 0;
+	}
+	
+	public void setWeight(int w){
+		weight = w;
+	}
+	
+	public int getWeight(){
+		return weight;
+	}
+	
+	public int getColor(){
+		return color;
+	}
+	
+	public void setColor(int c){
+		color = c;
+	}
+
+}
+=====================================================================
+Found a 6 line (46 tokens) duplication in the following files: 
+Starting at line 108 of C:\Users\dell-pc\Documents\GitHub\Lab4\mainWindow.java
+Starting at line 113 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\mainWindow.java
+
+        String temp = null;
+        String[] bridgeWords;
+        StringBuffer newSentence = new StringBuffer();
+        Random rand = new Random();
+        StringBuffer colorVertex = new StringBuffer();;
+        for (int i = 0; i < words.length - 1; i++) {//traverse the new text
+=====================================================================
+Found a 8 line (45 tokens) duplication in the following files: 
+Starting at line 134 of C:\Users\dell-pc\Documents\GitHub\Lab4\mainWindow.java
+Starting at line 135 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\mainWindow.java
+
+    public static Graph createDirectedGraph(String filename) {
+        String temp = null;
+        if (filename == null) {//read from console
+            System.out.println("Input the sentence:");
+            Scanner in = new Scanner(System.in);
+            temp = in.nextLine();
+            in.close();
+        } else {//read from file
+=====================================================================
+Found a 6 line (40 tokens) duplication in the following files: 
+Starting at line 115 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\gui\BigImageController.java
+Starting at line 762 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\gui\GuiController.java
+
+        Boolean isSE = cursorEvent.equals(Cursor.SE_RESIZE);
+
+        if (!isSE) {
+            stage.setX(event.getScreenX() - xOffset);
+            stage.setY(event.getScreenY() - yOffset);
+        } else {
+=====================================================================
+Found a 7 line (38 tokens) duplication in the following files: 
+Starting at line 641 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\gui\GuiController.java
+Starting at line 651 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\gui\GuiController.java
+
+        if (index == 0) {
+            wordBox.setVisible(true);
+            word1.setVisible(true);
+            word2.setVisible(true);
+            tips.setText("Please input one or two word");
+            tips.setStyle("-fx-fill:  #1565C0");
+        } else if (index == 1) {
+=====================================================================
+Found a 9 line (37 tokens) duplication in the following files: 
+Starting at line 103 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\gui\BigImageController.java
+Starting at line 746 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\gui\GuiController.java
+
+        xOffset = event.getSceneX();
+        yOffset = event.getSceneY();
+        startX = stage.getWidth() - xOffset;
+        startY = stage.getHeight() - yOffset;
+
+    }
+
+    @FXML
+    private void PanelMouseDraged(MouseEvent event) {
+=====================================================================
+Found a 5 line (34 tokens) duplication in the following files: 
+Starting at line 416 of C:\Users\dell-pc\Documents\GitHub\Lab4\mainWindow.java
+Starting at line 357 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\mainWindow.java
+
+            while (subscript != -1) {
+                tempList.add(G.getNodes().get(subscript).getWord());
+                //tmp.append(G.getNodes().get(subscript).getWord() + "<-");
+                subscript = path[subscript];
+            }
+=====================================================================
+Found a 6 line (34 tokens) duplication in the following files: 
+Starting at line 190 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\gui\GuiController.java
+Starting at line 245 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\gui\GuiController.java
+
+    private class queryBridgeWords implements Runnable {
+        
+        @Override
+        public void run() {
+            String w1 = word1.getText(), w2 = word2.getText();
+            if (w1.isEmpty() || w2.isEmpty()) {
+=====================================================================
+Found a 4 line (33 tokens) duplication in the following files: 
+Starting at line 71 of C:\Users\dell-pc\Documents\GitHub\Lab4\MyThread.java
+Starting at line 84 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\MyThread.java
+
+		    	   if(G.getNodeList().get(presentWord)!=null&&nextWord!=null){
+		    		   tempEdge = G.getNodeList().get(presentWord).get(nextWord);
+			    	   presentWord = nextWord;
+			    	   path.append("->" + presentWord);
+=====================================================================
+Found a 4 line (33 tokens) duplication in the following files: 
+Starting at line 255 of C:\Users\dell-pc\Documents\GitHub\Lab4\mainWindow.java
+Starting at line 120 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\MyThread.java
+
+    public static String moveOneStep(Graph G, String presentWord, String path){
+    	 Random random = new Random();
+    	 HashMap<String, Edge> map = G.getNodeList().get(presentWord);
+    	 if (map == null)
+=====================================================================
+Found a 3 line (32 tokens) duplication in the following files: 
+Starting at line 185 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\mainWindow.java
+Starting at line 601 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\gui\GuiController.java
+
+        result.addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> ov, String t, String t1) {
+=====================================================================
+Found a 3 line (31 tokens) duplication in the following files: 
+Starting at line 304 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\gui\GuiController.java
+Starting at line 684 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\gui\GuiController.java
+
+                out.println(newValue);
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(GuiController.class.getName()).log(Level.SEVERE, null, ex);
+=====================================================================
+Found a 4 line (28 tokens) duplication in the following files: 
+Starting at line 379 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\gui\GuiController.java
+Starting at line 453 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\gui\GuiController.java
+Starting at line 511 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\gui\GuiController.java
+
+                } catch (Exception ex) {
+                    Logger.getLogger(GuiController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+=====================================================================
+Found a 5 line (27 tokens) duplication in the following files: 
+Starting at line 497 of C:\Users\dell-pc\Documents\GitHub\Lab4\mainWindow.java
+Starting at line 100 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\core\Graph.java
+
+            }
+        } else {//start ->paths ->end
+            int len = words.length;
+            for (int i = 0; i < len - 1; i++) {
+                if (edge.get(words[i]) != null && edge.get(words[i]).get(words[i + 1]) != null) {
+=====================================================================
+Found a 4 line (27 tokens) duplication in the following files: 
+Starting at line 117 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\gui\BigImageController.java
+Starting at line 753 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\gui\GuiController.java
+Starting at line 763 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\gui\GuiController.java
+
+        if (!isSE) {
+            stage.setX(event.getScreenX() - xOffset);
+            stage.setY(event.getScreenY() - yOffset);
+        } else {
+=====================================================================
+Found a 3 line (27 tokens) duplication in the following files: 
+Starting at line 305 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\gui\GuiController.java
+Starting at line 379 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\gui\GuiController.java
+Starting at line 453 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\gui\GuiController.java
+Starting at line 511 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\gui\GuiController.java
+
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(GuiController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+=====================================================================
+Found a 7 line (26 tokens) duplication in the following files: 
+Starting at line 204 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\gui\GuiController.java
+Starting at line 232 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\gui\GuiController.java
+
+                    resultText.setText(result);
+                });
+                reloadImage();
+                
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    tips.setText("query bridge words failed");
+=====================================================================
+Found a 2 line (26 tokens) duplication in the following files: 
+Starting at line 379 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\gui\GuiController.java
+Starting at line 453 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\gui\GuiController.java
+Starting at line 511 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\gui\GuiController.java
+Starting at line 686 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\gui\GuiController.java
+
+                } catch (Exception ex) {
+                    Logger.getLogger(GuiController.class.getName()).log(Level.SEVERE, null, ex);
+=====================================================================
+Found a 3 line (25 tokens) duplication in the following files: 
+Starting at line 350 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\gui\GuiController.java
+Starting at line 601 of C:\Users\dell-pc\Documents\GitHub\Lab4\src\main\java\lab1\gui\GuiController.java
+
+        resultList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {

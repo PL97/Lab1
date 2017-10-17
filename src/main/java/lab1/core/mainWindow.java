@@ -237,7 +237,7 @@ public class mainWindow {
                 int newDistance = prNode.getWeiht() + tempMap.get(prNode.getWord()).get(b).getWeight();
                 for (treeNodes tNode : candidate) {
                     //if the new distance is shorter then update the tree
-                    if (tNode.getWord() == b) {
+                    if (b.compareTo(tNode.getWord()) == 0) {
                         find = true;
                         if (tNode.getWeiht() > newDistance) {
                             candidate.remove(tNode);
